@@ -1,0 +1,8 @@
+pandas
+nltk
+scikit-learn
+numpy
+transformers
+sentence_transformers
+torch
+matplotlib
