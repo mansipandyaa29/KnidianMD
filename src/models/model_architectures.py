@@ -7,6 +7,11 @@ from src.utils import save_object
 from difflib import SequenceMatcher
 import pickle
 
+import getpass
+import os
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+
 class Model:
     def __init__(self) -> None:
         pass
@@ -152,7 +157,6 @@ class Model:
         except Exception as e:
             raise CustomException(e,sys)
         
-
     def ss(self, symptoms, sentences):
         '''
         Defines the the basic sentence similarity model
@@ -179,6 +183,40 @@ class Model:
         except Exception as e:
             raise CustomException(e,sys)
 
+    def langchain(self,data,sentences):
+        os.environ["OPENAI_API_KEY"] = getpass.getpass()
+        embedding = OpenAIEmbeddings()
+        persist_directory = '/Users/mansipandya/Desktop/KnidianMD/docs/chroma'
+
+        # Create the vector store
+        vectordb = Chroma.from_documents(
+            documents=data,
+            embedding=embedding,
+            persist_directory=persist_directory
+        )
+        vectordb.persist()
+        vectordb = None
+        vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding)
+
+        symptom_list = []
+        k_number=5
+        for sentence in sentences:
+            if sentence == ' ':
+                continue
+            question = f"{sentence}. What symptoms in the database present in this sentence?"
+            docs = vectordb.max_marginal_relevance_search(question,k=k_number, fetch_k=10)
+            for i in range(k_number):
+                text = docs[i].page_content
+                lines = text.split('\n')
+                for line in lines:
+                    if line.startswith('symptom:'):
+                        symptom = line.split(': ', 1)[1]
+                        symptom_list.append(symptom)
+
+        save_object('checkpoints/lang_symptoms.pkl',symptom_list)
+        
+        return symptom_list
+            
 
         
 

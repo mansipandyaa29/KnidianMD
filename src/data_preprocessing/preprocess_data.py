@@ -6,11 +6,24 @@ from data_utils import bsearch,binsert
 
 import pandas as pd
 import re
+from langchain_community.document_loaders.csv_loader import CSVLoader
 
 
 class DataPreprocessing:
     def __init__(self) -> None:
         pass
+
+    def preprocess_langchain_data(self):
+        loader = CSVLoader(
+        file_path="/Users/mansipandya/Desktop/KnidianMD/data/symptoms_db.csv",
+        csv_args={
+            "delimiter": ",",
+            "quotechar": '"',
+            "fieldnames": ["id", "symptom"],
+        },
+        )
+        data = loader.load()
+        return data
 
     def preprocess_symptoms(self):
         '''

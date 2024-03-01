@@ -13,8 +13,9 @@ def main():
     log.info(f'The extracted Symptoms using the Traditional method are: {symptoms_trad}')
     symptoms_trad_ss = model.trad_ss(symptoms, vocab, itindx, sentences)
     log.info(f'The extracted Symptoms using the Traditional and Sentence Similarity method are: {symptoms_trad_ss}')
-    # symptoms_ss = model.ss(symptoms, sentences)
-    # log.info(f'The extracted Symptoms using just the Sentence Similarity method are: {symptoms_ss}')
+    symptoms_ss = model.ss(symptoms, sentences)
+    log.info(f'The extracted Symptoms using just the Sentence Similarity method are: {symptoms_ss}')
+    
 
 if __name__ == "__main__":
     main()

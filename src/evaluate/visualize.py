@@ -35,21 +35,16 @@ class Visualize():
         except Exception as e:
             raise CustomException(e,sys)
         
-    def compare_metrics(self,symptoms_trad,symptoms_ss,metric1,metric2,metric_type):
+    def compare_metrics(self,sympoms_list,metric_list,model_type,metric_type):
         try:
             log.info(f'Plotting {metric_type} Comparison Graph')
 
             plt.figure()
 
+            for i in range(3):
+                plt.plot(list(range(1, len(sympoms_list[i]) + 2)), metric_list[i], label=f'{metric_type} {model_type[i]}', marker='o')
 
-            plt.plot(list(range(1, len(symptoms_trad) + 2)), metric1, label=f'{metric_type} trad', marker='o')
-            plt.plot(list(range(1, len(symptoms_ss) + 2)), metric2, label=f'{metric_type} trad_ss', marker='o')
-
-            if list(range(1, len(symptoms_trad) + 2))>list(range(1, len(symptoms_ss) + 2)):
-                k_val = list(range(1, len(symptoms_trad) + 2))
-            else:
-                k_val = list(range(1, len(symptoms_ss) + 2))
-            # Adding labels and title
+            k_val = list(range(1, len(max(sympoms_list, key=len)) + 1))
             plt.xlabel('k values')
             plt.ylabel('Score')
             plt.title('Precision, Recall, and F1-score vs. k')

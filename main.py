@@ -25,6 +25,7 @@ stop_words.discard('no')
 sentences,original_text = data.preprocess_medical_history(stop_words)
 log.info(f"Medical History to analyse: {original_text}")
 log.info(f"Lines to analyze: {sentences}")
+lang_data = data.preprocess_langchain_data()
 
 
 log.info('Entering the Model Definition stage')
@@ -35,6 +36,9 @@ log.info(f'The extracted Symptoms using the Traditional method are: {symptoms_tr
 
 symptoms_trad_ss = load_object('checkpoints/trad_ss.pkl')
 log.info(f'The extracted Symptoms using the Traditional and Sentence Similarity method are: {symptoms_trad_ss}')
+
+symptoms_lc = load_object('checkpoints/lang_symptoms.pkl')
+log.info(f'The extracted Symptoms using the LangChain RAG method are: {symptoms_lc}')
 
 log.info('Entering the Evaluation Stage')
 
@@ -50,15 +54,21 @@ visualize.plot_prf(symptoms_trad, precision_trad, recall_trad, f1_score_trad, pl
 precision_trad_ss, recall_trad_ss, f1_score_trad_ss = evaluate.evaluate(y_truth,symptoms_trad_ss)
 visualize.plot_prf(symptoms_trad_ss, precision_trad_ss, recall_trad_ss, f1_score_trad_ss, plot_name = "trad_ss")
 
-# precision_ss, recall_ss, f1_score_ss = evaluate.evaluate(y_truth,symptoms_ss)
-# visualize.plot_prf(symptoms_ss, precision_ss, recall_ss, f1_score_ss, plot_name = "ss")
+precision_lang, recall_lang, f1_score_lang = evaluate.evaluate(y_truth,symptoms_lc)
+visualize.plot_prf(symptoms_lc, precision_lang, recall_lang, f1_score_lang, plot_name = "langchain")
+
+final_symptom_list = [symptoms_trad,symptoms_trad_ss,symptoms_lc]
+precision_values = [precision_trad,precision_trad_ss,precision_lang]
+recall_values = [recall_trad,recall_trad_ss,recall_lang]
+f1_values = [f1_score_trad,f1_score_trad_ss,f1_score_lang]
+model_type = ['trad','trad + ss','langchain']
 
 #Compare Precision
-visualize.compare_metrics(symptoms_trad,symptoms_trad_ss,precision_trad,precision_trad_ss,metric_type="Precision")
+visualize.compare_metrics(final_symptom_list,precision_values,model_type,metric_type="Precision")
 #Compare Recall
-visualize.compare_metrics(symptoms_trad,symptoms_trad_ss,recall_trad,recall_trad_ss,metric_type="Recall")
+visualize.compare_metrics(final_symptom_list,recall_values,model_type,metric_type="Recall")
 #Compare F1 Score
-visualize.compare_metrics(symptoms_trad,symptoms_trad_ss,f1_score_trad,f1_score_trad_ss,metric_type="F1")
+visualize.compare_metrics(final_symptom_list,f1_values,model_type,metric_type="F1")
 
 
 
