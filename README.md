@@ -34,9 +34,10 @@ symptoms_db.csv -> <a href="https://github.com/mansipandyaa29/KnidianMD/blob/mai
 
 ## 🧠 Model Building <a name="machine-learning-model">
 
-I have experimented with two Models:
+I have experimented with three Models:
 
 1) Traditional Model -> This Model uses basic word search and word similarity
 2) Traditional Embedding Model -> This Model uses basic word search, embeddings and sentence similarity.
+3) LangChain RAG Pipeline
 
 # Thank you!

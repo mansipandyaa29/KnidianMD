@@ -43,7 +43,7 @@ class Visualize():
 
 
             plt.plot(list(range(1, len(symptoms_trad) + 2)), metric1, label=f'{metric_type} trad', marker='o')
-            plt.plot(list(range(1, len(symptoms_ss) + 2)), metric2, label=f'{metric_type} ss', marker='o')
+            plt.plot(list(range(1, len(symptoms_ss) + 2)), metric2, label=f'{metric_type} trad_ss', marker='o')
 
             if list(range(1, len(symptoms_trad) + 2))>list(range(1, len(symptoms_ss) + 2)):
                 k_val = list(range(1, len(symptoms_trad) + 2))
