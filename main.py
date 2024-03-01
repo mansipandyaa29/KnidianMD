@@ -27,7 +27,6 @@ log.info(f"Medical History to analyse: {original_text}")
 log.info(f"Lines to analyze: {sentences}")
 
 
-
 log.info('Entering the Model Definition stage')
 model = Model()
 
