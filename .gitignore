@@ -11,6 +11,7 @@ docs/
 data/
 MedCATtrainer/
 logs/
+checkpoints/
 
 # Distribution / packaging
 .Python
