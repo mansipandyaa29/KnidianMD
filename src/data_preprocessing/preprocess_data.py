@@ -1,13 +1,13 @@
 import os
 import sys
-from src.logger import log
-from src.exception import CustomException
-from data_utils import bsearch,binsert
+
+from ..logger import log
+from ..exception import CustomException
+from .data_utils import bsearch,binsert
 
 import pandas as pd
 import re
 from langchain_community.document_loaders.csv_loader import CSVLoader
-
 
 class DataPreprocessing:
     def __init__(self) -> None:
@@ -33,7 +33,7 @@ class DataPreprocessing:
         log.info("Entered the preprocess symptoms method")
         try:
             log.info('Reading the symptoms database from symptoms_db.csv as a dataframe')
-            df = pd.read_csv('data/symptoms_db.csv')
+            df = pd.read_csv('/Users/mansipandya/Desktop/KnidianMD/data/symptoms_db.csv')
             symptoms=list()
             vocab=list()
             itindx=list()
@@ -65,18 +65,16 @@ class DataPreprocessing:
         except Exception as e:
             raise CustomException(e,sys)
         
-    def preprocess_medical_history(self,stop_words):
+    def preprocess_medical_history(self,text,stop_words):
         '''
         Reads the data from test_cases.txt and splits it into sentences
         Returns: Sentences and Original text
         '''
         log.info("Entered the preprocess symptoms method")
         try:
-            log.info('Reading the medical history from test_cases.csv as a dataframe')
-            df = pd.read_csv('data/test_cases.csv')
             log.info('Preprocessing the medical history initiated')
-            original_text = df.iloc[0].medical_history
-            original = df.iloc[0].medical_history.lower() 
+            original_text = text
+            original = text.lower() 
             pattern = r'\b\d+(\.\d+)?\s*\w+/\w+\b'
             original = re.sub(pattern, '.', original)
             original = original.replace('-', ' ')

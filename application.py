@@ -27,4 +27,4 @@ def predict_datapoint():
         return render_template('home.html',results = results)
 
 if __name__ == "__main__":
-    app.run(threaded=True, host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5000)

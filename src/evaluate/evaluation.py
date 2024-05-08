@@ -4,8 +4,10 @@ from src.exception import CustomException
 from src.logger import log
 
 class Evaluation():
+
     def __init__(self) -> None:
         pass
+
     def evaluate(self,y_truth,y_pred):
         '''
         Takes in the y_truth and y_pred array and returns the metrics
@@ -13,12 +15,14 @@ class Evaluation():
         '''
         try:
             log.info(f'Calculating the precision, recall and f1 score for k from 1 to {len(y_pred)}')
-            k_values = list(range(1, len(y_pred) + 2))
+            k_values = list(range(1, len(y_pred)+1))
             precision_values,recall_values,f1_score_values = [],[],[]
             for k in k_values:
-                precision = self.calculate_precision(y_truth, y_pred[:k])
+                #slicing the dictionary
+                sliced_y_pred = {key: y_pred[key] for key in list(y_pred.keys())[:k]}
+                precision = self.calculate_precision(y_truth, sliced_y_pred)
                 precision_values.append(precision)
-                recall = self.calculate_recall(y_truth, y_pred[:k])
+                recall = self.calculate_recall(y_truth, sliced_y_pred)
                 recall_values.append(recall)
                 f1_score = self.calculate_f1_score(precision, recall)
                 f1_score_values.append(f1_score)
@@ -32,16 +36,16 @@ class Evaluation():
             raise CustomException(e,sys)
     
     def calculate_precision(self,y_truth, y_pred):
-        set_truth = set(y_truth)
-        set_pred = set(y_pred)
+        set_truth = set(y_truth.keys())
+        set_pred = set(y_pred.keys())
         true_positives = len(set_truth.intersection(set_pred))
         false_positives = len(set_pred.difference(set_truth))
         precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0.0
         return precision
 
     def calculate_recall(self,y_truth, y_pred):
-        set_truth = set(y_truth)
-        set_pred = set(y_pred)
+        set_truth = set(y_truth.keys())
+        set_pred = set(y_pred.keys())
         true_positives = len(set_truth.intersection(set_pred))
         false_negatives = len(set_truth.difference(set_pred))
         recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0.0
