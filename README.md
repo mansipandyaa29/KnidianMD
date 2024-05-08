@@ -38,6 +38,8 @@ I have experimented with three Models:
 
 1) Traditional Model -> This Model uses basic word search and word similarity
 2) Traditional Embedding Model -> This Model uses basic word search, embeddings and sentence similarity.
-3) LangChain RAG Pipeline
+3) RAG Pipeline
+4) RAG V2: An advanced iteration of the RAG framework.
+5) MedCAT
 
 # Thank you!
