@@ -1,7 +1,6 @@
 import sys
-import nltk
-from nltk.corpus import stopwords
 import pandas as pd
+import ast
 
 from src.logger import log
 from src.utils import load_object
@@ -10,66 +9,73 @@ from src.data_preprocessing import DataPreprocessing
 from src.models import Model
 from src.evaluate import Evaluation, Visualize
 
-import logging
-logging.getLogger('transformers').setLevel(logging.WARNING)
-
-log.info('Running logging from main.py file')
-
-log.info('Entering the Data Preprocessing Stage')
-data = DataPreprocessing()
-symptoms, vocab, itindx = data.preprocess_symptoms()
-log.info(f'Initialization of symptoms ({len(symptoms)}), vocab ({len(vocab)}) and itindx ({len(itindx)}) complete')
+import nltk
+from nltk.corpus import stopwords
 nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
 stop_words.discard('no')
-sentences,original_text = data.preprocess_medical_history(stop_words)
-log.info(f"Medical History to analyse: {original_text}")
-log.info(f"Lines to analyze: {sentences}")
-lang_data = data.preprocess_langchain_data()
+
+import logging
+logging.getLogger('transformers').setLevel(logging.WARNING)
 
 
-log.info('Entering the Model Definition stage')
-model = Model()
 
-symptoms_trad = load_object('checkpoints/traditional.pkl')
-log.info(f'The extracted Symptoms using the Traditional method are: {symptoms_trad}')
+# log.info('Running logging from main.py file')
 
-symptoms_trad_ss = load_object('checkpoints/trad_ss.pkl')
-log.info(f'The extracted Symptoms using the Traditional and Sentence Similarity method are: {symptoms_trad_ss}')
+# log.info('Entering the Data Preprocessing Stage')
+# data = DataPreprocessing()
 
-symptoms_lc = load_object('checkpoints/lang_symptoms.pkl')
-log.info(f'The extracted Symptoms using the LangChain RAG method are: {symptoms_lc}')
+# log.info("Preprocessing Symptoms Database")
+# symptoms, vocab, itindx = data.preprocess_symptoms()
+# lang_data = data.preprocess_langchain_data()
+# log.info(f'Initialization of symptoms ({len(symptoms)}), vocab ({len(vocab)}) and itindx ({len(itindx)}) complete')
 
-log.info('Entering the Evaluation Stage')
+# log.info("Preprocessing Test Data")
+# df = pd.read_csv('/Users/mansipandya/Desktop/KnidianMD/data/test_cases.csv')
+# df['symptoms'] = df['symptoms'].apply(ast.literal_eval)
+# df['Processed_Medical_History'] = df['medical_history'].apply(data.preprocess_medical_history, stop_words=stop_words)
 
-df = pd.read_csv('data/test_cases.csv')
-y_truth = df['symptoms'].apply(lambda x: x.split(', ')).tolist()[0] #7 values
+# df.to_pickle('/Users/mansipandya/Desktop/KnidianMD/checkpoints/df_pmh.pkl')
 
-evaluate = Evaluation()
+# df = pd.read_pickle('/Users/mansipandya/Desktop/KnidianMD/checkpoints/df_pmh.pkl')
+
+# log.info('Entering the Model Definition stage')
+# model = Model()
+# hugging_face_model = 'sentence-transformers/multi-qa-mpnet-base-dot-v1'
+# df['traditional'] = df['Processed_Medical_History'].apply(lambda x: model.traditional(x[0], symptoms, vocab, itindx))
+# df['traditional_ss'] = df['Processed_Medical_History'].apply(lambda x: model.trad_ss(x[0], symptoms, vocab, itindx,hugging_face_model))
+# df['medcat'] = df['medical_history'].apply(model.medcat)
+# df['langchain'] = df['Processed_Medical_History'].apply(lambda x: model.langchain(x[0]))
+# df['langchainv2'] = df['Processed_Medical_History'].apply(lambda x: model.langchain_v2(x[0]))
+
+# df.to_pickle('/Users/mansipandya/Desktop/KnidianMD/checkpoints/df_model.pkl')
+# df = pd.read_pickle('/Users/mansipandya/Desktop/KnidianMD/checkpoints/df_model.pkl')
+
+# log.info('Entering the Evaluation Stage')
+# evaluate = Evaluation()
+# df['precision_trad'], df['recall_trad'], df['f1_trad'] = zip(*df.apply(lambda row: evaluate.evaluate(row['symptoms'], row['traditional']), axis=1))
+# df['precision_trad_ss'], df['recall_trad_ss'], df['f1_trad_ss'] = zip(*df.apply(lambda row: evaluate.evaluate(row['symptoms'], row['traditional_ss']), axis=1))
+# df['precision_medcat'], df['recall_medcat'], df['f1_medcat'] = zip(*df.apply(lambda row: evaluate.evaluate(row['symptoms'], row['medcat']), axis=1))
+# df['precision_lang'], df['recall_lang'], df['f1_lang'] = zip(*df.apply(lambda row: evaluate.evaluate(row['symptoms'], row['langchain']), axis=1))
+# df['precision_langv2'], df['recall_langv2'], df['f1_langv2'] =  zip(*df.apply(lambda row: evaluate.evaluate(row['symptoms'], row['langchainv2']), axis=1))
+
+# df.to_pickle('/Users/mansipandya/Desktop/KnidianMD/checkpoints/df_prf_pickle.pkl')
+df = pd.read_pickle('/Users/mansipandya/Desktop/KnidianMD/checkpoints/df_prf_pickle.pkl')
+
+
+# log.info('Entering the Visualization Stage')
 visualize = Visualize()
+# visualize.plot_prf(df,'precision_trad','recall_trad','f1_trad', plot_name = "traditional")
+# visualize.plot_prf(df,'precision_trad_ss','recall_trad_ss','f1_trad_ss', plot_name = "traditional_ss")
+# visualize.plot_prf(df,'precision_medcat','recall_medcat','f1_medcat', plot_name = "medcat")
+# visualize.plot_prf(df,'precision_lang','recall_lang','f1_lang', plot_name = "langchain")
+# visualize.plot_prf(df,'precision_langv2','recall_langv2','f1_langv2', plot_name = "langchainv2")
 
-precision_trad, recall_trad, f1_score_trad = evaluate.evaluate(y_truth,symptoms_trad)
-visualize.plot_prf(symptoms_trad, precision_trad, recall_trad, f1_score_trad, plot_name = "traditional")
+model_type = ['trad','trad + ss','medcat','langchain','langv2']
 
-precision_trad_ss, recall_trad_ss, f1_score_trad_ss = evaluate.evaluate(y_truth,symptoms_trad_ss)
-visualize.plot_prf(symptoms_trad_ss, precision_trad_ss, recall_trad_ss, f1_score_trad_ss, plot_name = "trad_ss")
-
-precision_lang, recall_lang, f1_score_lang = evaluate.evaluate(y_truth,symptoms_lc)
-visualize.plot_prf(symptoms_lc, precision_lang, recall_lang, f1_score_lang, plot_name = "langchain")
-
-final_symptom_list = [symptoms_trad,symptoms_trad_ss,symptoms_lc]
-precision_values = [precision_trad,precision_trad_ss,precision_lang]
-recall_values = [recall_trad,recall_trad_ss,recall_lang]
-f1_values = [f1_score_trad,f1_score_trad_ss,f1_score_lang]
-model_type = ['trad','trad + ss','langchain']
-
-#Compare Precision
-visualize.compare_metrics(final_symptom_list,precision_values,model_type,metric_type="Precision")
-#Compare Recall
-visualize.compare_metrics(final_symptom_list,recall_values,model_type,metric_type="Recall")
-#Compare F1 Score
-visualize.compare_metrics(final_symptom_list,f1_values,model_type,metric_type="F1")
-
+visualize.compare_metrics(df,model_type,metric_type='precision')
+visualize.compare_metrics(df,model_type,metric_type='recall')
+visualize.compare_metrics(df,model_type,metric_type='f1')
 
 
 
