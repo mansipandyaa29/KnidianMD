@@ -12,7 +12,7 @@ class PredictPipeline:
 
     def predict(self,text_data):
         try:
-            model = CAT.load_model_pack("/Users/mansipandya/Desktop/KnidianMD/data/medcat/medcat_trained/medcat_model_pack_db2b2af3234d151a.zip")
+            model = CAT.load_model_pack("data/medcat/medcat_trained/medcat_model_pack_db2b2af3234d151a.zip")
             symptoms = []
             for i in range(len(model.get_entities(text_data)['entities'])):
                 if i not in model.get_entities(text_data)['entities']:

@@ -20,7 +20,6 @@ def predict_datapoint():
     else:
         data = request.form.get('medical_history')
         print(data)
-
         predict_pipeline = PredictPipeline()
         results = predict_pipeline.predict(data)
 
