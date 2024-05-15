@@ -14,5 +14,5 @@ steps:
   - run
   - --filename=K8s_configs/
   - --image=gcr.io/knidianmd-cicd/myapp:v1
-  - --location=us-west1-b
+  - --location=asia-northeast3-b
   - --cluster=knidiancicd
