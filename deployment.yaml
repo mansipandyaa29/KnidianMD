@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knidian
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: knidianmd
+  template:
+    metadata:
+      labels:
+        app: knidianmd
+    spec:
+      containers:
+      - name: knidianmd
+        image: gcr.io/knidianmd-cicd/myapp:v1
+        ports:
+        - containerPort: 5000
