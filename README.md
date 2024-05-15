@@ -42,4 +42,4 @@ I have experimented with three Models:
 4) RAG V2: An advanced iteration of the RAG framework.
 5) MedCAT
 
-# Thank you!
+# Thank you!!
