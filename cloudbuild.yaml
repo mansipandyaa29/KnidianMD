@@ -2,7 +2,7 @@ steps:
 #Build the image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/knidianmd-cicd/myapp:v1', '.']
-  timeout: 600s
+  timeout: 1200s
 
 #Push the image
 - name: 'gcr.io/cloud-builders/docker'
